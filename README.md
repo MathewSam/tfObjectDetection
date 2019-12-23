@@ -7,4 +7,4 @@ This project is an attempt to build an object detection system using Tensorflow 
 
 ## Running
 To run the testing file, you run:
-g++ testing.cpp -lopencv_core -lopencv_imgcodecs -lopencv_highgui 
+g++ testing.cpp -lopencv_core -lopencv_imgcodecs -lopencv_highgui -lopencv_videoio
