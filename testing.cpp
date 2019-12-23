@@ -3,7 +3,7 @@
 
 #include "opencv2/opencv.hpp"
 
-#include "video_handler.cpp"
+#include "video_handler.h"
 
 using namespace cv;
 using namespace std;

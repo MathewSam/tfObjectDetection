@@ -6,5 +6,11 @@ This project is an attempt to build an object detection system using Tensorflow 
 2. OpenCV: Installed by running sudo apt-get install libopencv-dev
 
 ## Running
-To run the testing file, you run:
-g++ testing.cpp -lopencv_core -lopencv_imgcodecs -lopencv_highgui -lopencv_videoio
+To run the testing file, you run:<br/>
+g++ video_handler.cpp testing.cpp -lopencv_core -lopencv_imgcodecs -lopencv_highgui -lopencv_videoio
+
+## Reference
+Since resources available for utilizing tensorflow C API is scarce, I used the following to get a foothold:  
+1. [Medium Deep Learning page for Tensorflow in C](https://medium.com/@danishshres/single-shot-detection-using-tensorflow-c-api-edfe5d9942a4)
+2. [This Tensorflow for C repository](https://github.com/rky0930/tf_c_api)
+
