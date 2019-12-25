@@ -4,7 +4,7 @@
 #include "opencv2/opencv.hpp"
 
 #include "video_handler.h"
-
+#include "object_detection.h"
 using namespace cv;
 using namespace std;
 
