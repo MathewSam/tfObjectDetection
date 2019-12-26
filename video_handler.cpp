@@ -27,6 +27,11 @@ void VideoHandler::StreamHandler(){
 
 }
 
+/**
+ * \brief carries out post precessing of input frame using detection result from sess_run and uses it to mark region of interest in image
+ * \param od_result: output from sess_run
+ * \param frame: input image to mark area of interest for
+ */ 
 void VideoHandler::postprocessing(const OD_Result od_result,cv::Mat& frame) {
   int img_width = frame.cols;
   int img_height = frame.rows;
@@ -38,13 +43,11 @@ void VideoHandler::postprocessing(const OD_Result od_result,cv::Mat& frame) {
       int xmin = (int)(od_result.boxes[i*4+1] * img_width);
       int ymin = (int)(od_result.boxes[i*4+0] * img_height);
       int xmax = (int)(od_result.boxes[i*4+3] * img_width);
-      int ymax = (int)(od_result.boxes[i*4+2] * img_height);
-      
+      int ymax = (int)(od_result.boxes[i*4+2] * img_height);      
       cv::rectangle(frame, cv::Point(xmin, ymin), cv::Point(xmax, ymax), CV_RGB(0, 0, 255));
-      //std::cout<<"Box_"<<box_cnt<<"("<<od_result.scores[i]<<", "<<od_result.label_ids[i]<<"): ["<<xmin<<", "<<ymin<<", "<<xmax<<", "<<ymax<<"]"<<std::endl;
-      //box_cnt++;
+
     }
   }
-  //std::cout<<"Total box number: "<<box_cnt<<std::endl;
+
   
 }

@@ -3,9 +3,20 @@ This project is an attempt to build an object detection system using Tensorflow 
 
 
 ## Dependencies
-1. Tensorflow: Installed from [here](https://www.tensorflow.org/install/lang_c)
-2. OpenCV: Installed by running 
-    > sudo apt-get install libopencv-dev
+1. g++ >= 7.4.0
+    (for Linux)  
+    Already available in most distros  
+    (for Windows)
+    Recommend using MinGW  
+
+2. Tensorflow: 
+    Installed from [here](https://www.tensorflow.org/install/lang_c)
+
+3. OpenCV: 
+    (For Linux)
+    > sudo apt-get install libopencv-dev  
+    (For Windows ** Official installation directions are a bit spotty if not outdated. You will have better luck following below link or a youtube video)  
+    Follow instructions in [here](https://www.deciphertechnic.com/install-opencv-with-visual-studio/)  
 
 
 ## Running

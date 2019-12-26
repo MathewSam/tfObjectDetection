@@ -1,11 +1,20 @@
 #include "object_detection.h"
 
-
+/**
+ * \brief This function is meant to free buffer initialized for loading graph
+ * \param data: data that is read in from the file
+ * \param length: size of above data
+ */ 
 void free_buffer(void* data, size_t length) {                                             
         free(data);                                                                       
 } 
 /**
-* /brief
+* \brief Creates tensor object from the block memory provided in data
+* \param data_type data type of tensor input
+* \param dims dimensions of input array block of memory
+* \param num_dims number of dimsions
+* \param data input data
+* \param len size of input data
 */
 TF_Tensor* ObjectDetection::CreateTensor(TF_DataType data_type,const std::int64_t* dims,std::size_t num_dims,const void* data,std::size_t len){
     if(dims==nullptr||data==nullptr){
@@ -18,7 +27,9 @@ TF_Tensor* ObjectDetection::CreateTensor(TF_DataType data_type,const std::int64_
     std::memcpy(TF_TensorData(tensor), data, std::min(len, TF_TensorByteSize(tensor)));
     return tensor;
 }
-
+/**
+ *  \brief Initializes and prepares all units used in sess_run. This includes loading the model to a new graph and setting inputs and outputs from graph 
+ */
 void ObjectDetection::set_graph() {
   std::cout<<"Load Model: "<<this->frozen_graph_path<<std::endl;
   this->graph_def = this->read_file(this->frozen_graph_path);
@@ -61,6 +72,10 @@ void ObjectDetection::set_graph() {
 
 }
 
+/**
+ * \brief reads graph from input file and prepares buffer with data from file
+ * \param path: path to file to load data from
+ */ 
 TF_Buffer* ObjectDetection::read_file(std::string path) {
   const char* file = path.c_str();
   FILE *f = fopen(file, "rb");
@@ -78,6 +93,11 @@ TF_Buffer* ObjectDetection::read_file(std::string path) {
   buf->data_deallocator = free_buffer;
   return buf;
 }
+/**
+ * \brief runs input image provided through computation graph and returns predictions from graph
+ * \param img: input image to run through graph
+ * \return result of object detection in structure OD_Result 
+ */ 
 OD_Result ObjectDetection::sess_run(const cv::Mat img) {
   ResetOutputValues();
   // Create input variable
@@ -132,21 +152,27 @@ OD_Result ObjectDetection::sess_run(const cv::Mat img) {
   DeleteInputValues();
   return this->od_result;
 }
-
+/**
+ * \brief Function to deallocate input  of graph
+ */ 
 void ObjectDetection::DeleteInputValues() {
   for (size_t i = 0; i < input_values.size(); ++i) {
     if (input_values[i] != nullptr) TF_DeleteTensor(input_values[i]);
   }
   input_values.clear();
 }
-
+/**
+ * \brief Function to deallocate output  of graph
+ */ 
 void ObjectDetection::ResetOutputValues() {
   for (size_t i = 0; i < output_values.size(); ++i) {
     if (output_values[i] != nullptr) TF_DeleteTensor(output_values[i]);
   }
   output_values.clear();
 }
-
+/**
+ * \brief Destructor for the ObjectDetection instance
+ */ 
 ObjectDetection::~ObjectDetection() {
   TF_CloseSession(this->sess, this->sess_status);
   TF_DeleteSession(this->sess, this->sess_status);
