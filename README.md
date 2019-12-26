@@ -40,7 +40,7 @@ This file hods declaration of the video handler part of the code which extracts 
 This file holds the member functions of the VideoHandler class which are:
  - StreamHandler: Handles input stream from camera
  - postprocessing: computes and draws bounding box on object detected
- 
+
 ## Running
 To run the testing file, you run:<br/>
 > g++ object_detection.cpp video_handler.cpp main.cpp -lopencv_shape -lopencv_stitching -lopencv_superres -lopencv_videostab -lopencv_aruco -lopencv_bgsegm -lopencv_bioinspired -lopencv_ccalib -lopencv_datasets -lopencv_dpm -lopencv_face -lopencv_freetype -lopencv_fuzzy -lopencv_hdf -lopencv_line_descriptor -lopencv_optflow -lopencv_video -lopencv_plot -lopencv_reg -lopencv_saliency -lopencv_stereo -lopencv_structured_light -lopencv_phase_unwrapping -lopencv_rgbd -lopencv_viz -lopencv_surface_matching -lopencv_text -lopencv_ximgproc -lopencv_calib3d -lopencv_features2d -lopencv_flann -lopencv_xobjdetect -lopencv_objdetect -lopencv_ml -lopencv_xphoto -lopencv_highgui -lopencv_videoio -lopencv_imgcodecs -lopencv_photo -lopencv_imgproc -lopencv_core -ltensorflow  
@@ -50,7 +50,7 @@ Will be updated with a make file soon
 To exit, press Esc button.
 
 ## Model used
-The model used for the detection task is taken from the paper [Single Shot MultiBox Detector](https://arxiv.org/abs/1512.02325)
+The model used for the detection task is taken from the paper [Single Shot MultiBox Detector](https://arxiv.org/abs/1512.02325). To use another model, please replace the frozen_inference_graph.pb file stored in the models folder with a pretrained model of your preference from the Tensorflow Object Detection API.
 
 ## Reference
 Since resources available for utilizing tensorflow C API is scarce, I used the following to get a foothold:  
