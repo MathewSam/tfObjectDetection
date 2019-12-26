@@ -38,17 +38,15 @@ class ObjectDetection {
     bool verbose = false;
     bool visible = false;
   public:
-    ObjectDetection(std::string frozen_graph_path, float confidence_score_threshold, 
-                    int max_detections);
+    ObjectDetection(std::string frozen_graph_path, float confidence_score_threshold, int max_detections):frozen_graph_path(frozen_graph_path),confidence_score_threshold(confidence_score_threshold),max_detections(max_detections){
+                      std::cout<<"Hello";
+                    }
     ~ObjectDetection() { close(); }
-    void init();
     void set_graph();
     void set_froze_graph_path(std::string path) { frozen_graph_path = path; }
     void set_visible_mode(bool mode) { visible = mode; }
-    void preprocessing(IplImage* src, IplImage* dst);
-    OD_Result sess_run(IplImage* img);
-    OD_Result run(const char* img_path);
-    OD_Result postprocessing(IplImage* src, OD_Result od_result);
+    OD_Result sess_run(cv::Mat& img);
+    OD_Result postprocessing(cv::Mat& src, OD_Result od_result);
     TF_Buffer* read_file(std::string path);
     void DeleteInputValues();
     void ResetOutputValues();

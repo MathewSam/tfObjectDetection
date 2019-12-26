@@ -8,11 +8,14 @@
 #include <opencv2/core/mat.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
-class VideoHandler{
+#include "object_detection.h"
+
+class VideoHandler : private ObjectDetection
+{
+        private:
+        bool activate_camera = true;//Boolean that decides if input is from camera or video file
     public:
-        VideoHandler(bool activate_camera);//Constructor
+        VideoHandler(std::string frozen_graph_path, float confidence_score_threshold, int max_detections):ObjectDetection(frozen_graph_path, confidence_score_threshold, max_detections){};//Constructor
         int StreamHandler();
-    private:
-        bool activate_camera;//Boolean that decides if input is from camera or video file
-        char filename[100];//Filename of video file if chosen
+
 };

@@ -19,16 +19,7 @@ TF_Tensor* CreateTensor(TF_DataType data_type,const std::int64_t* dims,std::size
     std::memcpy(TF_TensorData(tensor), data, std::min(len, TF_TensorByteSize(tensor)));
     return tensor;
 }
-/**
-* /brief
-*/
-ObjectDetection::ObjectDetection(std::string frozen_graph_path, float confidence_score_threshold, int max_detections){
-    this->frozen_graph_path = frozen_graph_path;
-    this->confidence_score_threshold = confidence_score_threshold;
-    this->max_detections = max_detections;
-    this->visible = true;
-    this->verbose = true;
-}
+
 /**
 * /brief Loads model from provided file, creates session from model
 */
@@ -77,21 +68,21 @@ void ObjectDetection::set_graph() {
 /**
 * /brief
 */
-OD_Result ObjectDetection::sess_run(IplImage* img) {
+OD_Result ObjectDetection::sess_run(cv::Mat& img) {
   ResetOutputValues();
   // Create input variable
-  int img_width = img->width;
-  int img_height = img->height;
-  int img_channel = img->nChannels;  
+  int img_width = img.cols;
+  int img_height = img.rows;
+  int img_channel = img.channels();  
   const std::vector<std::int64_t> input_dims = {1, img_height, img_width, img_channel};
   int image_size_by_dims = img_height*img_width*img_channel;
-  int image_tensor_size = std::min(image_size_by_dims, img->imageSize);
+  int image_tensor_size = image_size_by_dims;
   if (this->verbose) {
     std::cout<<"image_tensor_size: "<<image_tensor_size<<std::endl;
   }
   TF_Tensor* input_value = CreateTensor(TF_UINT8,
                                         input_dims.data(), input_dims.size(),
-                                        img->imageData, image_tensor_size);
+                                        img.isContinuous()? img.data: img.clone().data, image_tensor_size);
   // TF_Tensor* input_values[1] = {input_value};
   input_values.emplace_back(input_value);
   // Create output variable
@@ -139,10 +130,10 @@ OD_Result ObjectDetection::sess_run(IplImage* img) {
   return od_result;
 }
 
-OD_Result ObjectDetection::postprocessing(IplImage* img, OD_Result od_result) {
-  int img_width = img->width;
-  int img_height = img->height;
-  int img_channel = img->nChannels;  
+OD_Result ObjectDetection::postprocessing(cv::Mat& img, OD_Result od_result) {
+  int img_width = img.cols;
+  int img_height = img.rows;
+  int img_channel = img.channels();  
   int num_detections = (int)od_result.num_detections[0];
   int box_cnt = 0; 
   for (int i=0; i<num_detections; i++) {
@@ -151,10 +142,10 @@ OD_Result ObjectDetection::postprocessing(IplImage* img, OD_Result od_result) {
       int ymin = (int)(od_result.boxes[i*4+0] * img_height);
       int xmax = (int)(od_result.boxes[i*4+3] * img_width);
       int ymax = (int)(od_result.boxes[i*4+2] * img_height);
-      /*
+      
       if (this->visible) {
-        cvRectangle(img, cvPoint(xmin, ymin), cvPoint(xmax, ymax), CV_RGB(0, 255, 255));
-      }*/
+        cv::rectangle(img, cv::Point(xmin, ymin), cv::Point(xmax, ymax), CV_RGB(0, 255, 255));
+      }
       std::cout<<"Box_"<<box_cnt<<"("<<od_result.scores[i]<<", "<<od_result.label_ids[i]<<"): ["<<xmin<<", "<<ymin<<", "<<xmax<<", "<<ymax<<"]"<<std::endl;
       box_cnt++;
     }
