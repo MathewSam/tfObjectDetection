@@ -14,7 +14,7 @@
 
 class ObjectDetection {
   private:
-
+    TF_Tensor* CreateTensor(TF_DataType data_type,const std::int64_t* dims,std::size_t num_dims,const void* data,std::size_t len);
     std::string frozen_graph_path="";
     float confidence_score_threshold;
     int max_detections;
@@ -38,19 +38,14 @@ class ObjectDetection {
     std::vector<TF_Output> output_ops;
     std::vector<TF_Tensor*> output_values;
     OD_Result od_result;
-    bool verbose = false;
-    bool visible = false;
+
   public:
     ObjectDetection(std::string frozen_graph_path, float confidence_score_threshold, int max_detections):frozen_graph_path(frozen_graph_path),confidence_score_threshold(confidence_score_threshold),max_detections(max_detections){};
     void set_graph();
     TF_Buffer* read_file(std::string path);
-    void set_visible_mode(bool mode) { visible = mode; }
     OD_Result sess_run(const cv::Mat img);
-    void postprocessing(cv::Mat& src);
     void DeleteInputValues();
     void ResetOutputValues();
-    
-    ~ObjectDetection(); //{ close(); }
-/*
-    void close();*/
+    ~ObjectDetection(); 
+
 };

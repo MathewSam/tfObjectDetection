@@ -7,7 +7,7 @@ void free_buffer(void* data, size_t length) {
 /**
 * /brief
 */
-TF_Tensor* CreateTensor(TF_DataType data_type,const std::int64_t* dims,std::size_t num_dims,const void* data,std::size_t len){
+TF_Tensor* ObjectDetection::CreateTensor(TF_DataType data_type,const std::int64_t* dims,std::size_t num_dims,const void* data,std::size_t len){
     if(dims==nullptr||data==nullptr){
         return nullptr;
     }
@@ -87,9 +87,7 @@ OD_Result ObjectDetection::sess_run(const cv::Mat img) {
   const std::vector<std::int64_t> input_dims = {1, img_height, img_width, img_channel};
   int image_size_by_dims = img_height*img_width*img_channel;
   int image_tensor_size = image_size_by_dims;
-  if (this->verbose) {
-    std::cout<<"image_tensor_size: "<<image_tensor_size<<std::endl;
-  }
+
   TF_Tensor* input_value = CreateTensor(TF_UINT8,
                                         input_dims.data(), input_dims.size(),
                                         img.isContinuous()? img.data: img.clone().data, image_tensor_size);
@@ -109,11 +107,7 @@ OD_Result ObjectDetection::sess_run(const cv::Mat img) {
   output_values.emplace_back(scores_value);
   output_values.emplace_back(classes_value);
   output_values.emplace_back(num_detections_value);
-  if (this->verbose) {
-    std::cout << "Input op info: " << TF_OperationNumInputs(input_op) << "\n";
-    std::cout << "Input dims info: (" << TF_Dim(input_value, 0) <<", "<< TF_Dim(input_value, 1) <<", "\
-                                      << TF_Dim(input_value, 2) <<", "<< TF_Dim(input_value, 3) <<")"<< "\n";
-  }
+
   const TF_Output* inputs_ptr = input_ops.empty() ? nullptr : &input_ops[0];
   TF_Tensor* const* input_values_ptr =
       input_values.empty() ? nullptr : &input_values[0];
