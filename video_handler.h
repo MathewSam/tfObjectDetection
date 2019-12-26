@@ -14,8 +14,9 @@ class VideoHandler : private ObjectDetection
 {
         private:
         bool activate_camera = true;//Boolean that decides if input is from camera or video file
+        
     public:
         VideoHandler(std::string frozen_graph_path, float confidence_score_threshold, int max_detections):ObjectDetection(frozen_graph_path, confidence_score_threshold, max_detections){};//Constructor
-        int StreamHandler();
-
+        void StreamHandler();
+        void postprocessing(const OD_Result od_result,cv::Mat& frame);
 };

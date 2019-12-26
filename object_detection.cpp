@@ -1,6 +1,5 @@
 #include "object_detection.h"
 
-using namespace cv;
 
 void free_buffer(void* data, size_t length) {                                             
         free(data);                                                                       
@@ -20,9 +19,6 @@ TF_Tensor* CreateTensor(TF_DataType data_type,const std::int64_t* dims,std::size
     return tensor;
 }
 
-/**
-* /brief Loads model from provided file, creates session from model
-*/
 void ObjectDetection::set_graph() {
   std::cout<<"Load Model: "<<this->frozen_graph_path<<std::endl;
   this->graph_def = this->read_file(this->frozen_graph_path);
@@ -65,10 +61,24 @@ void ObjectDetection::set_graph() {
 
 }
 
-/**
-* /brief
-*/
-OD_Result ObjectDetection::sess_run(cv::Mat& img) {
+TF_Buffer* ObjectDetection::read_file(std::string path) {
+  const char* file = path.c_str();
+  FILE *f = fopen(file, "rb");
+  fseek(f, 0, SEEK_END);
+  long fsize = ftell(f);
+  fseek(f, 0, SEEK_SET);  //same as rewind(f);
+
+  void* data = malloc(fsize);
+  fread(data, fsize, 1, f);
+  fclose(f);
+
+  TF_Buffer* buf = TF_NewBuffer();
+  buf->data = data;
+  buf->length = fsize;
+  buf->data_deallocator = free_buffer;
+  return buf;
+}
+OD_Result ObjectDetection::sess_run(const cv::Mat img) {
   ResetOutputValues();
   // Create input variable
   int img_width = img.cols;
@@ -117,64 +127,16 @@ OD_Result ObjectDetection::sess_run(cv::Mat& img) {
                 outputs_ptr, output_values_ptr, this->output_ops.size(),
                 nullptr, 0, nullptr, this->sess_status);
   
-  OD_Result od_result; 
-  od_result.boxes = (float*)TF_TensorData(output_values[0]);
-  od_result.scores = (float*)TF_TensorData(output_values[1]);
-  od_result.label_ids = (float*)TF_TensorData(output_values[2]);
-  od_result.num_detections = (float*)TF_TensorData(output_values[3]);
+  this->od_result.boxes = (float*)TF_TensorData(output_values[0]);
+  this->od_result.scores = (float*)TF_TensorData(output_values[1]);
+  this->od_result.label_ids = (float*)TF_TensorData(output_values[2]);
+  this->od_result.num_detections = (float*)TF_TensorData(output_values[3]);
   TF_DeleteTensor(boxes_value);
   TF_DeleteTensor(scores_value);
   TF_DeleteTensor(classes_value);
   TF_DeleteTensor(num_detections_value);
   DeleteInputValues();
-  return od_result;
-}
-
-OD_Result ObjectDetection::postprocessing(cv::Mat& img, OD_Result od_result) {
-  int img_width = img.cols;
-  int img_height = img.rows;
-  int img_channel = img.channels();  
-  int num_detections = (int)od_result.num_detections[0];
-  int box_cnt = 0; 
-  for (int i=0; i<num_detections; i++) {
-    if (od_result.scores[i] >= 0.5) {
-      int xmin = (int)(od_result.boxes[i*4+1] * img_width);
-      int ymin = (int)(od_result.boxes[i*4+0] * img_height);
-      int xmax = (int)(od_result.boxes[i*4+3] * img_width);
-      int ymax = (int)(od_result.boxes[i*4+2] * img_height);
-      
-      if (this->visible) {
-        cv::rectangle(img, cv::Point(xmin, ymin), cv::Point(xmax, ymax), CV_RGB(0, 255, 255));
-      }
-      std::cout<<"Box_"<<box_cnt<<"("<<od_result.scores[i]<<", "<<od_result.label_ids[i]<<"): ["<<xmin<<", "<<ymin<<", "<<xmax<<", "<<ymax<<"]"<<std::endl;
-      box_cnt++;
-    }
-  }
-  std::cout<<"Total box number: "<<box_cnt<<std::endl;
-  /*
-  if (this->visible) {
-    cvShowImage("Drawing Graphics", img);
-    cvWaitKey(0);
-  }*/
-  return od_result;
-}
-
-TF_Buffer* ObjectDetection::read_file(std::string path) {
-  const char* file = path.c_str();
-  FILE *f = fopen(file, "rb");
-  fseek(f, 0, SEEK_END);
-  long fsize = ftell(f);
-  fseek(f, 0, SEEK_SET);  //same as rewind(f);
-
-  void* data = malloc(fsize);
-  fread(data, fsize, 1, f);
-  fclose(f);
-
-  TF_Buffer* buf = TF_NewBuffer();
-  buf->data = data;
-  buf->length = fsize;
-  buf->data_deallocator = free_buffer;
-  return buf;
+  return this->od_result;
 }
 
 void ObjectDetection::DeleteInputValues() {
@@ -191,7 +153,7 @@ void ObjectDetection::ResetOutputValues() {
   output_values.clear();
 }
 
-void ObjectDetection::close() {
+ObjectDetection::~ObjectDetection() {
   TF_CloseSession(this->sess, this->sess_status);
   TF_DeleteSession(this->sess, this->sess_status);
   TF_DeleteSessionOptions(this->sess_opts);
@@ -199,4 +161,3 @@ void ObjectDetection::close() {
   TF_DeleteGraph(this->graph);
   TF_DeleteStatus(this->graph_status);
 }
-
