@@ -66,10 +66,16 @@ Compile
 Run 
 >./streamer  
 
+## While Running ./streamer
+When running ./streamer, the following prompts will pop up:
+>Please enter location of inference graph : ./models/frozen_inference_graph.pb (or wherever you saved your model)   
+> Please enter confidence threshold : 0.8(or your preferred confidence threshold)  
+> Please enter maximum number of objects detected per frame : 5(or your prefered number of objects per frame)  
+
 To exit, press Esc button.
 
 ## Model used
-The model used for the detection task is taken from the paper [Single Shot MultiBox Detector](https://arxiv.org/abs/1512.02325). To use another model, please replace the frozen_inference_graph.pb file stored in the models folder with a pretrained model of your preference from the Tensorflow Object Detection API.
+The model used for the detection task is taken from the paper [Single Shot MultiBox Detector](https://arxiv.org/abs/1512.02325). 
 
 ## Reference
 Since resources available for utilizing tensorflow C API is scarce, I used the following to get a foothold:  
