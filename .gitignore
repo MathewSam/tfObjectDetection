@@ -1,6 +1,5 @@
 *.out
 *.tar.gz
 *.zip
-ssd_mobilenet_v1_coco_2018_01_28/*
 .vscode/*
 
