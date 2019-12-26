@@ -72,6 +72,7 @@ When running ./streamer, the following prompts will pop up:
 > Please enter confidence threshold : 0.8(or your preferred confidence threshold)  
 > Please enter maximum number of objects detected per frame : 5(or your prefered number of objects per frame)  
 
+Using the above user set parameters, the model is set to receive camera data and an opencv window opens up with real time bounding box predictions.  
 To exit, press Esc button.
 
 ## Model used
