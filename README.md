@@ -4,7 +4,8 @@ This project is an attempt to build an object detection system using Tensorflow 
 
 ## Dependencies
 1. Tensorflow: Installed from [here](https://www.tensorflow.org/install/lang_c)
-2. OpenCV: Installed by running sudo apt-get install libopencv-dev
+2. OpenCV: Installed by running 
+    > sudo apt-get install libopencv-dev
 
 
 ## Running
@@ -15,7 +16,7 @@ To run the testing file, you run:<br/>
 Will be updated with a make file soon
 
 ## Model used
-The model used for the detection task is taken from the paper [Scalable Object Detection using Deep NeuralNetworks](https://arxiv.org/abs/1312.2249)
+The model used for the detection task is taken from the paper [Single Shot MultiBox Detector](https://arxiv.org/abs/1512.02325)
 
 ## Reference
 Since resources available for utilizing tensorflow C API is scarce, I used the following to get a foothold:  
