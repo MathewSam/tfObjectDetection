@@ -3,5 +3,5 @@
 *.zip
 .vscode/*
 *.o
-streamer
+./streamer
 

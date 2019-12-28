@@ -41,19 +41,6 @@ This file holds the member functions of the VideoHandler class which are:
  - StreamHandler: Handles input stream from camera
  - postprocessing: computes and draws bounding box on object detected
 
-## Rubric and Criteria
-### Loops, Functions and I/O
- - The project demonstrates an understanding of C++ functions and control sturctures.
- - The project accepts user input and processes the input(main.cpp).
-### Object Oriented Programming
- - The project uses Object Oriented Programming techniques(video_handler.h & .cpp and object_detection.h & .cpp).
- - Classes use appropriate access specifiers for class members(video_handler.h (line 15 & 18) and object_detection.h (line 16 & 42)).
- - Class constructors utilize member initialization lists(video_handler.h (line 19) and object_detection.h (line 43)).
- - Classes abstract implementation details from their interfaces.
- - Classes encapsulate behavior.
-### Memory Management
- - The project makes use of references in function declarations.(video_handler.h (line 21))
- - The project uses destructors where required(object_detection.h (line 49))
  
 ## Running
 To run the code, first clone repository
